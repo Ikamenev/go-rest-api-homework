@@ -4,9 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"net/http"
-
 	"github.com/go-chi/chi/v5"
+	"net/http"
 )
 
 // Task ...
@@ -71,6 +70,10 @@ func postTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if _, ok := tasks[task.ID]; ok {
+		http.Error(w, "ID уже присутствует", http.StatusBadRequest)
+		return
+	}
 	tasks[task.ID] = task
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -100,8 +103,7 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 func deleteTask(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	_, ok := tasks[id]
-	if !ok {
+	if _, ok := tasks[id]; !ok {
 		http.Error(w, "Задача не найдена", http.StatusBadRequest)
 		return
 	}
