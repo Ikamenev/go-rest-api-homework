@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"strconv"
-
 	"github.com/go-chi/chi/v5"
+	"net/http"
 )
 
 // Task ...
@@ -72,13 +70,7 @@ func postTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = strconv.Atoi(task.ID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if _, ok := tasks["task.ID"]; ok {
+	if _, ok := tasks[task.ID]; ok {
 		http.Error(w, "ID уже присутствует", http.StatusBadRequest)
 		return
 	}
